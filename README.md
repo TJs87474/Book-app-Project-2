@@ -1,3 +1,4 @@
+
 # 📚 AI-Powered Book Recommendation & Review App
 
 > A smart book companion that recommends, tracks, and discusses books based on your reading preferences.
@@ -88,4 +89,4 @@ The app is composed of the following unique screens:
 >
 > Mockups are being validated, and Firebase/Auth setup is underway.
 
-README.md was helped created with OpenAI (5/1/2025).
+README.md (this file's format) was helped created with OpenAI (5/1/2025).
