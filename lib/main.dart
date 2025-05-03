@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'SearchPage.dart'; // Import your SearchPage
+import 'FavoritesPage.dart'; // Import your FavoritesPage
 
 void main() {
   runApp(AIBookApp());
@@ -13,7 +15,6 @@ class AIBookApp extends StatelessWidget {
       home: HomePage(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        // Customize your theme here if needed.
       ),
     );
   }
@@ -22,7 +23,6 @@ class AIBookApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Replace 'assets/logo.png' with your actual logo asset path.
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -31,22 +31,12 @@ class HomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                /*
-                Image.file(
-                  image/ui_design/home_page.png,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.contain,
-                ),
-                */
-                // Logo Section
                 Icon(
                   Icons.menu_book,
                   size: 100,
-                  color: Colors.blue, // color of icon
+                  color: Colors.blue,
                 ),
                 const SizedBox(height: 16),
-                // Greeting Text
                 const Text(
                   'Welcome User!',
                   style: TextStyle(
@@ -55,25 +45,12 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                // "My Reading Lists" Button
                 ElevatedButton.icon(
                   onPressed: () {
-                    // No functionality added per config
-                  },
-                  icon: const Icon(Icons.menu_book),
-                  label: const Text('My Reading Lists'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // "Search" Button
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // No functionality added per config
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchPage()), // Navigate to SearchPage
+                    );
                   },
                   icon: const Icon(Icons.search),
                   label: const Text('Search'),
@@ -85,13 +62,15 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // "Message Boards" Button
                 ElevatedButton.icon(
                   onPressed: () {
-                    // No functionality added per config
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FavoritesPage(favoriteBooks: [],)), // Navigate to FavoritesPage
+                    );
                   },
-                  icon: const Icon(Icons.forum_outlined),
-                  label: const Text('Message Boards'),
+                  icon: const Icon(Icons.star),
+                  label: const Text('My Favorites'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
