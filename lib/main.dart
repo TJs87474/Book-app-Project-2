@@ -1,10 +1,19 @@
+import 'package:bookapp/FavoritesPage.dart';
+import 'package:bookapp/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'SearchPage.dart'; // Import your SearchPage
-import 'FavoritesPage.dart'; // Import your FavoritesPage
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'FavoritesProvider.dart';
+import 'HomePage.dart';
+import 'LoginPage.dart'; // <--- import AuthPage
+import 'package:firebase_auth/firebase_auth.dart'; // <--- import FirebaseAuth
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     ChangeNotifierProvider(
       create: (_) => FavoritesProvider(),
@@ -13,84 +22,40 @@ void main() {
   );
 }
 
-
 class AIBookApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My Reading App',
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: AuthWrapper(), // <--- Dynamic screen based on auth state
+
+       // Define routes here
+      routes: {
+        '/login': (context) => AuthPage(), // Login Page
+        '/home': (context) => HomePage(), // Home Page
+        '/search': (context) => SearchPage(), // Search Page
+        '/favorites': (context) => FavoritesPage(), // Favorites Page
+      },
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 36.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.menu_book,
-                  size: 100,
-                  color: Colors.blue,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Welcome User!',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SearchPage()), // Navigate to SearchPage
-                    );
-                  },
-                  icon: const Icon(Icons.search),
-                  label: const Text('Search'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FavoritesPage()), // Navigate to FavoritesPage
-                    );
-                  },
-                  icon: const Icon(Icons.star),
-                  label: const Text('My Favorites'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(), // watches login/logout
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        } else if (snapshot.hasData) {
+          return HomePage(); // user is logged in
+        } else {
+          return AuthPage(); // user is NOT logged in
+        }
+      },
     );
   }
 }

@@ -10,7 +10,7 @@ class BookDetailsPage extends StatelessWidget {
     required this.title,
     required this.author,
     required this.description,
-    this.imageUrl,
+    required this.imageUrl,
   });
 
   @override
@@ -22,21 +22,22 @@ class BookDetailsPage extends StatelessWidget {
         child: Column(
           children: [
             imageUrl != null
-                ? Image.network(imageUrl!, height: 200)
-                : Icon(Icons.menu_book_outlined, size: 200),
+                ? Image.network(imageUrl!, width: 150, height: 200)
+                : Icon(Icons.menu_book_outlined, size: 150),
             SizedBox(height: 16),
             Text(
-              author,
+              'Title: $title',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Text(
-                  description.isNotEmpty ? description : 'No description available.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
+            SizedBox(height: 8),
+            Text(
+              'Author: $author',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(height: 8),
+            Text(
+              description,
+              style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
             ),
           ],
         ),
