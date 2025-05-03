@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'BookDetailsPage.dart'; // Make sure to create this file
+import 'package:provider/provider.dart';
+import 'FavoritesProvider.dart';
+import 'BookDetailsPage.dart';
 
 class SearchResultsPage extends StatefulWidget {
   final String query;
@@ -15,7 +17,6 @@ class SearchResultsPage extends StatefulWidget {
 class _SearchResultsPageState extends State<SearchResultsPage> {
   List<dynamic> _books = [];
   bool _isLoading = true;
-  Set<String> _favorites = Set();
 
   @override
   void initState() {
@@ -41,18 +42,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     }
   }
 
-  void _toggleFavorite(String bookId) {
-    setState(() {
-      if (_favorites.contains(bookId)) {
-        _favorites.remove(bookId);
-      } else {
-        _favorites.add(bookId);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final favoritesProvider = Provider.of<FavoritesProvider>(context);
+
     return Scaffold(
       appBar: AppBar(title: Text('Results for "${widget.query}"')),
       body: _isLoading
@@ -62,14 +55,23 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               : ListView.builder(
                   itemCount: _books.length,
                   itemBuilder: (context, index) {
-                    final book = _books[index]['volumeInfo'];
-                    final id = _books[index]['id'];
+                    final item = _books[index];
+                    final book = item['volumeInfo'];
+                    final id = item['id'];
                     final title = book['title'] ?? 'No Title';
                     final authors = (book['authors'] ?? ['Unknown']).join(', ');
-                    final thumbnail = book['imageLinks'] != null ? book['imageLinks']['thumbnail'] : null;
+                    final thumbnail = book['imageLinks']?['thumbnail'];
                     final description = book['description'] ?? '';
 
-                    final isFavorite = _favorites.contains(id);
+                   final Map<String, String?> bookMap = {
+  'id': id.toString(),
+  'title': title?.toString(),
+  'author': authors?.toString(),
+  'thumbnail': thumbnail?.toString(),
+};
+
+
+                    final isFavorite = favoritesProvider.isFavorite(id);
 
                     return ListTile(
                       leading: thumbnail != null
@@ -100,7 +102,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           isFavorite ? Icons.star : Icons.star_border,
                           color: isFavorite ? Colors.yellow : null,
                         ),
-                        onPressed: () => _toggleFavorite(id),
+                        onPressed: () {
+                          favoritesProvider.toggleFavorite(bookMap);
+                        },
                       ),
                     );
                   },

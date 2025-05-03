@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'SearchPage.dart'; // Import your SearchPage
 import 'FavoritesPage.dart'; // Import your FavoritesPage
+import 'FavoritesProvider.dart';
 
 void main() {
-  runApp(AIBookApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => FavoritesProvider(),
+      child: AIBookApp(),
+    ),
+  );
 }
+
 
 class AIBookApp extends StatelessWidget {
   @override
@@ -66,7 +74,7 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FavoritesPage(favoriteBooks: [],)), // Navigate to FavoritesPage
+                      MaterialPageRoute(builder: (context) => FavoritesPage()), // Navigate to FavoritesPage
                     );
                   },
                   icon: const Icon(Icons.star),
