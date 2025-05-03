@@ -24,6 +24,24 @@ class _FavoritesPageState extends State<FavoritesPage> {
     }
   }
 
+  // Function to remove a favorite
+  Future<void> removeFavorite(String bookId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        // Remove the book from Firestore favorites collection
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('favorites')
+            .doc(bookId) // Use the book's unique ID
+            .delete();
+      } catch (e) {
+        print('Error removing favorite: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +63,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             itemCount: favorites.length,
             itemBuilder: (context, index) {
               final favorite = favorites[index];
+              final id = favorite.id; // This is the document ID, which should be the unique book ID
               final title = favorite['title'];
               final author = favorite['author'];
               final description = favorite['description'];
@@ -74,6 +93,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   },
                 ),
                 subtitle: Text(author),
+                trailing: IconButton(
+                  icon: Icon(Icons.remove_circle, color: const Color.fromARGB(255, 0, 0, 0)),
+                  onPressed: () {
+                    removeFavorite(id); // Pass the book's unique ID to remove it
+                  },
+                ),
               );
             },
           );
