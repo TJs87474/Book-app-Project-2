@@ -103,8 +103,17 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           color: isFavorite ? Colors.yellow : null,
                         ),
                         onPressed: () {
-                          favoritesProvider.toggleFavorite(bookMap);
-                        },
+  final bookData = {
+    'id': id,
+    'title': title,
+    'author': authors,
+    'thumbnail': thumbnail,
+    'description': description,
+  };
+  Provider.of<FavoritesProvider>(context, listen: false).toggleFavorite(bookData);
+  setState(() {}); // Optional: to update the icon
+},
+
                       ),
                     );
                   },

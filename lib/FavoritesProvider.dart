@@ -5,17 +5,33 @@ class FavoritesProvider extends ChangeNotifier {
 
   List<Map<String, String?>> get favorites => _favorites;
 
-  void toggleFavorite(Map<String, String?> book) {
-    final existing = _favorites.indexWhere((b) => b['id'] == book['id']);
-    if (existing >= 0) {
-      _favorites.removeAt(existing);
+  void toggleFavorite(Map<String, dynamic> bookData) {
+    final String? id = bookData['id']?.toString();
+    final String? title = bookData['title']?.toString();
+    final String? author = bookData['author']?.toString();
+    final String? thumbnail = bookData['thumbnail']?.toString();
+    final String? description = bookData['description']?.toString();
+
+    final book = {
+      'id': id,
+      'title': title,
+      'author': author,
+      'thumbnail': thumbnail,
+      'description': description,
+    };
+
+    final existingIndex = _favorites.indexWhere((item) => item['id'] == id);
+
+    if (existingIndex != -1) {
+      _favorites.removeAt(existingIndex);
     } else {
       _favorites.add(book);
     }
+
     notifyListeners();
   }
 
   bool isFavorite(String id) {
-    return _favorites.any((b) => b['id'] == id);
+    return _favorites.any((book) => book['id'] == id);
   }
 }

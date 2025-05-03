@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'FavoritesProvider.dart';
+import 'BookDetailsPage.dart';
 
 class FavoritesPage extends StatelessWidget {
   @override
@@ -23,11 +24,24 @@ class FavoritesPage extends StatelessWidget {
                       title: Text(book['title'] ?? 'No Title'),
                       subtitle: Text(book['author'] ?? 'Unknown'),
                       trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
+                        icon: Icon(Icons.delete, color: const Color.fromARGB(255, 0, 0, 0)),
                         onPressed: () {
                           provider.toggleFavorite(book);
                         },
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookDetailsPage(
+                              title: book['title'] ?? 'No Title',
+                              author: book['author'] ?? 'Unknown',
+                              description: book['description'] ?? 'No description available.',
+                              imageUrl: book['thumbnail'],
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
                 );
