@@ -20,24 +20,38 @@ class _FavoritesPageState extends State<FavoritesPage> {
           .collection('users')
           .doc(user.uid)
           .collection('favorites')
-          .snapshots(); // Listen for real-time updates
+          .snapshots();
     }
   }
 
-  // Function to remove a favorite
   Future<void> removeFavorite(String bookId) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
-        // Remove the book from Firestore favorites collection
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .collection('favorites')
-            .doc(bookId) // Use the book's unique ID
+            .doc(bookId)
             .delete();
       } catch (e) {
         print('Error removing favorite: $e');
+      }
+    }
+  }
+
+  Future<void> updateReadingStatus(String bookId, String status) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('favorites')
+            .doc(bookId)
+            .update({'readingStatus': status});
+      } catch (e) {
+        print('Error updating reading status: $e');
       }
     }
   }
@@ -63,11 +77,18 @@ class _FavoritesPageState extends State<FavoritesPage> {
             itemCount: favorites.length,
             itemBuilder: (context, index) {
               final favorite = favorites[index];
-              final id = favorite.id; // This is the document ID, which should be the unique book ID
-              final title = favorite['title'];
-              final author = favorite['author'];
-              final description = favorite['description'];
-              final thumbnail = favorite['thumbnail'];
+              final id = favorite.id;
+              final data = favorite.data() as Map<String, dynamic>;
+
+              final title = data['title'];
+              final author = data['author'];
+              final description = data['description'];
+              final thumbnail = data['thumbnail'];
+
+              // Safely handle missing 'readingStatus'
+              final readingStatus = data.containsKey('readingStatus')
+                  ? data['readingStatus']
+                  : 'Want to Read';
 
               return ListTile(
                 leading: thumbnail != null
@@ -92,11 +113,32 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     );
                   },
                 ),
-                subtitle: Text(author),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(author),
+                    SizedBox(height: 4),
+                    DropdownButton<String>(
+                      value: readingStatus,
+                      onChanged: (newStatus) {
+                        if (newStatus != null) {
+                          updateReadingStatus(id, newStatus);
+                        }
+                      },
+                      items: ['Want to Read', 'Currently Reading', 'Finished']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
                 trailing: IconButton(
-                  icon: Icon(Icons.remove_circle, color: Colors.black),
+                  icon: Icon(Icons.remove_circle, color: Colors.red),
                   onPressed: () {
-                    removeFavorite(id); // Pass the book's unique ID to remove it
+                    removeFavorite(id);
                   },
                 ),
               );
