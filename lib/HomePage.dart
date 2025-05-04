@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.menu_book, size: 100, color: Colors.blue),
+                Icon(Icons.menu_book, size: 100, color: Colors.black),
                 const SizedBox(height: 16),
                 const Text(
                   'Welcome User!',

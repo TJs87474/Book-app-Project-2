@@ -136,7 +136,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   ],
                 ),
                 trailing: IconButton(
-                  icon: Icon(Icons.remove_circle, color: Colors.red),
+                  icon: Icon(Icons.remove_circle, color: Colors.black),
                   onPressed: () {
                     removeFavorite(id);
                   },
