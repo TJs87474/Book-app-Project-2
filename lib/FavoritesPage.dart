@@ -94,7 +94,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 ),
                 subtitle: Text(author),
                 trailing: IconButton(
-                  icon: Icon(Icons.remove_circle, color: const Color.fromARGB(255, 0, 0, 0)),
+                  icon: Icon(Icons.remove_circle, color: Colors.black),
                   onPressed: () {
                     removeFavorite(id); // Pass the book's unique ID to remove it
                   },

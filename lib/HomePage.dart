@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bookapp/LoginPage.dart';
+import 'package:bookapp/ChatRoomPage.dart'; 
 
 class HomePage extends StatelessWidget {
   @override
@@ -51,6 +52,16 @@ class HomePage extends StatelessWidget {
                   icon: const Icon(Icons.star),
                   label: const Text('My Favorites'),
                 ),
+                ElevatedButton.icon(
+                icon: Icon(Icons.chat_bubble_outline),
+                label: Text('Join Chatroom'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatRoomPage()),
+                  );
+                },
+              ),
               ],
             ),
           ),
